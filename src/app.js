@@ -3,6 +3,8 @@ import http from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dbConnection from './database/dbConnection.js';
+
 
 const app = express();
 
@@ -31,10 +33,21 @@ app.use(express.json());
 
 
 
-app.post('/api/v1/book', (req, res) => {
+app.post('/api/v1/book', async (req, res) => {
+    
+    try{
+        const { email, phone, reason, summary, date, slot } = req.body;
+        console.log(email, phone, reason, summary, date, slot);
 
-    const { email, phone, reason, summary, date, slot } = req.body;
-    console.log(email, phone, reason, summary, date, slot);
+        // add model name here
+        const saveData = new Booking({email, phone, reason, summary, date, slot});
+
+        await saveData.save();
+
+    }catch(err){
+        console.log(err);
+    }
+    
 })
 
 
@@ -63,8 +76,14 @@ io.on('connection', (socket) => {
         console.log('User disconnected:', socket.id);
     });
 });
-
 // Start the server with Socket.IO
-server.listen(3000, () => {
-    console.log(`Server is running on port 3000`);
+
+dbConnection().then(()=>{
+    server.listen(3000, () => {
+        console.log(`Server is running on port 3000`);
+    });
+}).catch((err)=>{
+    console.log(err)
 });
+
+
