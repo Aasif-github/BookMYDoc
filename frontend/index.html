@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="./socket.io.js"></script>
+<body>
+    <h3>Book My Doc</h3>
+    email: <input type="text" id="email">
+    phone: <input type="text" id="phone">
+    
+
+    <script>
+         // Connect to the server
+        const socket = io();
+        console.log(socket);
+        // Listen for the 'message' event from the server
+        socket.on('message', (data) => {
+            console.log('Message from server:', data);
+        });
+        // Emit a message to the server
+        socket.emit('message', 'Hello from client!');
+    </script>
+</body>
+</html>
