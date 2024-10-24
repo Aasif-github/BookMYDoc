@@ -4,15 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        #moring{
+            background-color: aqua;
+        }
+    </style>
 </head>
 <script src="./socket.io.js"></script>
 <body>
     <h3>Book My Doc</h3>
-    email: <input type="text" id="email">
-    phone: <input type="text" id="phone">
-    
 
+    <form id="bookByDoc">
+    name: <input type="text" id="email">
+    phone: <input type="text" id="phone">
+    <br>
+    <br>
+    reason: 
+    <select name="" id="reason">
+        <option value="">select-reason</option>
+        <option value="sick">sick</option>
+        <option value="sick">sick</option>
+        <option value="sick">sick</option>  
+    </select>
+    <br>
+    <br>
+    Summary: <textarea name="" id="summary" cols="40" rows="2"></textarea>
+    <br>
+    <br>
+    date: <input type="date" id="date">
+    <br>
+    <br>
+    <div>
+        <label for="">slot</label>
+        <span id="moring">
+            <input type="radio" name="slot" id="morning" value="morning">12:00 - 12:30 PM 
+        </span>
+        <input type="radio" name="slot" id="afternoon" value="afternoon">12:30 - 13:00 PM
+            <input type="radio" name="slot" id="night" value="night">13:00 - 13:30 PM
+    </div> 
+    <br>
+    <button type="submit" >Submit</button>
+    </form>
+
+    
     <script>
+        const form = document.getElementById('bookByDoc');
+        form.addEventListener('submit', (e)=>{
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const reason = document.getElementById('reason').value;
+            const summary = document.getElementById('summary').value;
+            const date = document.getElementById('date').value;
+            const slot = document.querySelector('input[name="slot"]:checked').value;
+            
+            console.log(email, phone, reason, summary, date, slot);
+
+            const data = {email, phone, reason, summary, date, slot};
+            fetch('http://localhost:3000/api/v1/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });         
+        })  
+        
          // Connect to the server
         const socket = io();
         console.log(socket);
@@ -25,3 +89,9 @@
     </script>
 </body>
 </html>
+
+<!-- todo
+ on dom load fetch form and slots
+1. submit this form with ajax or fetch 
+2. onSubmit update frontend with avilable slot 
+-->

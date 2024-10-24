@@ -1,0 +1,19 @@
+# Users-Schema
+- userId
+- name
+- phone_no
+- reason
+- note
+
+# Slots-Schema
+- slotsId
+- date
+- startTime
+- endTime
+
+# AptBooking-Schema
+- bookingId
+- userId
+- slotsId
+- status [confirm | cancelled | completed]
+

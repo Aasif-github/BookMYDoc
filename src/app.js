@@ -29,6 +29,23 @@ app.get('/test', (req, res) => {
 
 app.use(express.json());
 
+
+
+app.post('/api/v1/book', (req, res) => {
+
+    const { email, phone, reason, summary, date, slot } = req.body;
+    console.log(email, phone, reason, summary, date, slot);
+})
+
+
+
+
+
+
+
+
+
+
 // Set up Socket.IO connection
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
