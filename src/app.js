@@ -5,6 +5,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dbConnection from './database/dbConnection.js';
 import bookingRouter  from './routes/bookings.route.js';
+import slotsRouter from './routes/slot.route.js';
+
 
 const app = express();
 app.use(express.json());
@@ -12,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1', bookingRouter);
+app.use('/api/v1', slotsRouter);
 
 // Create HTTP server and attach Socket.IO
 const server = http.createServer(app);

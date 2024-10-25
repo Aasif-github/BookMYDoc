@@ -34,14 +34,11 @@
     date: <input type="date" id="date">
     <br>
     <br>
-    <div>
-        <label for="">slot</label>
-        <span id="moring">
-            <input type="radio" name="slot" id="morning" value="morning">12:00 - 12:30 PM 
-        </span>
-        <input type="radio" name="slot" id="afternoon" value="afternoon">12:30 - 13:00 PM
-            <input type="radio" name="slot" id="night" value="night">13:00 - 13:30 PM
-    </div> 
+    <div id="slotsContainer">
+        <div class="slot">
+         
+        </div>
+      </div>
     <br>
     <button type="submit" >Submit</button>
     </form>
@@ -87,6 +84,40 @@
         });
         // Emit a message to the server
         socket.emit('message', 'Hello from client!');
+
+        // on dom load fetch avilable slots
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch('http://localhost:3000/api/v1/slots')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                console.log('display',data.data);
+
+                const slotsContainer = document.getElementById('slotsContainer');
+                data.data._slots.forEach(slot => {
+                    const slotDiv = document.createElement('div');
+                    slotDiv.classList.add('slot');
+                    // Define the radio button with formatted start and end time
+     
+                    // Format the start and end times with AM/PM
+            const formattedStartTime = new Date(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            const formattedEndTime = new Date(slot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+            // Define the radio button with formatted start and end time including AM/PM
+            slotDiv.innerHTML = `
+                <label>
+                    <input type="radio" name="timeSlot" value="${slot.startTime}-${slot.endTime}" required>
+                    ${formattedStartTime} - ${formattedEndTime}
+                </label>
+            `;
+
+                    slotsContainer.appendChild(slotDiv);
+                });
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            }); 
+        })      
     </script>
 </body>
 </html>

@@ -21,6 +21,10 @@ const bookingSchmea = new mongoose.Schema({
         ref: 'slots',
         required: true       
     },
+    bookingDate: {
+        type: Date, 
+        required: true
+    },
     status: {
         type:String,
         required: true        

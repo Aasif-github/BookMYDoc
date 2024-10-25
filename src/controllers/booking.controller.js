@@ -10,7 +10,7 @@ const postBooking  = async(req, res) => {
         // slotId:'66bbc1ff5da4cd3aa3b4750b', 
 
         const userDate = { name, phoneNo, reason, note }
-        const slotDetails = { date, startTime, endTime }    
+        const slotDetails = { startTime, endTime }    
 
         let _users = new users(userDate)
         let _slots = new slots(slotDetails);         
@@ -18,18 +18,19 @@ const postBooking  = async(req, res) => {
         let userId = _users._id
         let slotId = _slots._id
         
-        const bookingDetails = { userId, slotId, status:"confirm" }
+        const bookingDetails = { userId, slotId, bookingDate:date, status:"confirm" }
         
         let _bookings = new bookings(bookingDetails);
         // after saving user and slot then save booking with userId and slotId
         Promise.all([await _users.save(), await _slots.save(), await _bookings.save()])
-            .then((response) => { 
-            
+            .then((response) => {             
                 console.log(response);      
             }).catch((error)=>{
                 console.log(`error:${error}`);
             });                
-        console.log(`here`);
+        
+            console.log(`here`);
+            
         return res.status(201).send({
             status:"success",
             message:"Booking has made",
