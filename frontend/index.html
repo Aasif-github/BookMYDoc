@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        #moring{
-            background-color: aqua;
-        }
+        
     </style>
 </head>
 <script src="./socket.io.js"></script>
@@ -22,9 +20,9 @@
     reason: 
     <select name="" id="reason">
         <option value="">select-reason</option>
-        <option value="sick">sick</option>
-        <option value="sick">sick</option>
-        <option value="sick">sick</option>  
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>  
     </select>
     <br>
     <br>
@@ -43,7 +41,6 @@
     <button type="submit" >Submit</button>
     </form>
 
-    
     <script>
         const form = document.getElementById('bookByDoc');
         form.addEventListener('submit', (e)=>{
@@ -53,7 +50,7 @@
             const reason = document.getElementById('reason').value;
             const note = document.getElementById('note').value;
             const date = document.getElementById('date').value;
-            const slot = document.querySelector('input[name="slot"]:checked').value;
+            const slot = document.querySelector('input[name="timeSlot"]:checked').value;
             
             console.log(name, phoneNo, reason, note, date, slot);
 
@@ -106,7 +103,7 @@
             // Define the radio button with formatted start and end time including AM/PM
             slotDiv.innerHTML = `
                 <label>
-                    <input type="radio" name="timeSlot" value="${slot.startTime}-${slot.endTime}" required>
+                    <input type="radio" name="timeSlot" value="${slot.startTime}_${slot.endTime}" required>
                     ${formattedStartTime} - ${formattedEndTime}
                 </label>
             `;
@@ -118,6 +115,17 @@
                 console.error('Error:', error);
             }); 
         })      
+
+        //on date change fetch avilable slots
+        document.getElementById('date').addEventListener('change', () => {
+            const date = document.getElementById('date').value;
+            fetch(`http://localhost:3000/api/v1/slots/${date}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                console.log('display',data.data);                
+            })          
+        })  
     </script>
 </body>
 </html>

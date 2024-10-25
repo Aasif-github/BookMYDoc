@@ -25,6 +25,10 @@ const bookingSchmea = new mongoose.Schema({
         type: Date, 
         required: true
     },
+    bookingDate: {
+        type: Date, 
+        required: true  
+    },
     status: {
         type:String,
         required: true        
