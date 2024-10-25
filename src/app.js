@@ -4,9 +4,14 @@ import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dbConnection from './database/dbConnection.js';
-
+import bookingRouter  from './routes/bookings.route.js';
 
 const app = express();
+app.use(express.json());
+// For URL-encoded data (e.g., from forms):
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/v1', bookingRouter);
 
 // Create HTTP server and attach Socket.IO
 const server = http.createServer(app);
@@ -29,26 +34,25 @@ app.get('/test', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'test.html'));
 });
 
-app.use(express.json());
 
 
 
-app.post('/api/v1/book', async (req, res) => {
+// app.post('/api/v1/book', async (req, res) => {
     
-    try{
-        const { email, phone, reason, summary, date, slot } = req.body;
-        console.log(email, phone, reason, summary, date, slot);
+//     try{
+//         const { email, phone, reason, summary, date, slot } = req.body;
+//         console.log(email, phone, reason, summary, date, slot);
 
-        // add model name here
-        const saveData = new Booking({email, phone, reason, summary, date, slot});
+//         // add model name here
+//         const saveData = new Booking({email, phone, reason, summary, date, slot});
 
-        await saveData.save();
+//         await saveData.save();
 
-    }catch(err){
-        console.log(err);
-    }
+//     }catch(err){
+//         console.log(err);
+//     }
     
-})
+// })
 
 
 
