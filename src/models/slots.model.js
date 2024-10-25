@@ -5,18 +5,18 @@ const slotsSchema = new mongoose.Schema({
         type:String,
         required: true
     },
-    // slot:{
-    //     type:String,
-    //     required: true
-    // },
-    startTime: {
-        type: Date,
-        required: true,
-      },
-    endTime: {
-        type: Date,
-        required: true,
-    },    
+    slot:{
+        type:String,
+        required: true
+    },
+    // startTime: {
+    //     type: Date,
+    //     required: true,
+    //   },
+    // endTime: {
+    //     type: Date,
+    //     required: true,
+    // },    
 }, {
     timestamps: true
 });
