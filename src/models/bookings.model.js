@@ -1,16 +1,6 @@
 import mongoose from "mongoose";
 
 const bookingSchmea = new mongoose.Schema({
-    //  _id: mongoose.Schema.Types.ObjectId, auto generated in mongodb
-    // or
-    // userId: {
-    //     type: Schema.Types.ObjectId,
-    //     default: function () {
-    //       return new mongoose.Types.ObjectId();
-    //     },
-    //     unique: true,
-    //   },
-    
     userId: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'users',     
@@ -35,6 +25,19 @@ const bookingSchmea = new mongoose.Schema({
     },   
 },{ timestamps:true }); 
 
-const bookings =  mongoose.model("bookings", bookingSchmea)
+const bookings = mongoose.model("bookings", bookingSchmea)
 
 export default bookings;
+
+
+/*
+//  _id: mongoose.Schema.Types.ObjectId, auto generated in mongodb
+    // or
+    // userId: {
+    //     type: Schema.Types.ObjectId,
+    //     default: function () {
+    //       return new mongoose.Types.ObjectId();
+    //     },
+    //     unique: true,
+    //   },
+*/ 

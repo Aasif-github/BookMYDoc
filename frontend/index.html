@@ -3,9 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>BookMyDoc</title>
     <style>
-        
+        .slot {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .booked {
+            background-color: #ffcccb; /* Light red for booked slots */
+        }
+
+        .available {
+            background-color: #d3ffd3; /* Light green for available slots */
+        }
     </style>
 </head>
 <script src="./socket.io.js"></script>
@@ -32,17 +45,23 @@
     date: <input type="date" id="date">
     <br>
     <br>
-    <div id="slotsContainer">
-        <div class="slot">
+        <!-- show all slots -->
+        <div id="slotsContainer"> 
+            <div class="slot">
          
+            </div>
         </div>
-      </div>
+        <!-- show available slots -->
+        <div id="slots-container"></div>
+
     <br>
     <button type="submit" >Submit</button>
     </form>
 
     <script>
+        
         const form = document.getElementById('bookByDoc');
+
         form.addEventListener('submit', (e)=>{
             e.preventDefault();
             const name = document.getElementById('name').value;
@@ -71,7 +90,7 @@
                 console.error('Error:', error);
             });         
         })  
-        
+// #  --------------------------------------------------------------------------------------      
          // Connect to the server
         const socket = io();
         console.log(socket);
@@ -81,6 +100,7 @@
         });
         // Emit a message to the server
         socket.emit('message', 'Hello from client!');
+// #  --------------------------------------------------------------------------------------
 
         // on dom load fetch avilable slots
         window.addEventListener('DOMContentLoaded', () => {
@@ -97,33 +117,67 @@
                     // Define the radio button with formatted start and end time
      
                     // Format the start and end times with AM/PM
-            const formattedStartTime = new Date(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-            const formattedEndTime = new Date(slot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const formattedStartTime = new Date(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const formattedEndTime = new Date(slot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
 
-            // Define the radio button with formatted start and end time including AM/PM
-            slotDiv.innerHTML = `
-                <label>
-                    <input type="radio" name="timeSlot" value="${slot.startTime}_${slot.endTime}" required>
-                    ${formattedStartTime} - ${formattedEndTime}
-                </label>
-            `;
+                    // Define the radio button with formatted start and end time including AM/PM
+                    slotDiv.innerHTML = `
+                        <label>
+                            <input type="radio" name="timeSlot" value="${slot.startTime}_${slot.endTime}" required>
+                            ${formattedStartTime} - ${formattedEndTime}
+                        </label>
+                    `;
 
-                    slotsContainer.appendChild(slotDiv);
-                });
+                            slotsContainer.appendChild(slotDiv);
+                        });
             })
             .catch((error) => {
                 console.error('Error:', error);
             }); 
         })      
-
+// #  --------------------------------------------------------------------------------------
         //on date change fetch avilable slots
         document.getElementById('date').addEventListener('change', () => {
+            const slotsContainer = document.getElementById('slotsContainer');            
+            slotsContainer.hidden = true;
+
             const date = document.getElementById('date').value;
             fetch(`http://localhost:3000/api/v1/slots/${date}`)
             .then(response => response.json())
             .then(data => {
+                const container = document.getElementById('slots-container');
+
                 console.log('Success:', data);
                 console.log('display',data.data);                
+                
+                let slots = data.data.results;              
+                
+                slots.forEach(slot => {
+                    const slotDiv = document.createElement('div');
+                    slotDiv.className = 'slot'; // Base class for all slots
+                    
+                     // Format the start and end times with AM/PM
+                    const formattedStartTime = new Date(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                    
+                    const formattedEndTime = new Date(slot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+                    // Set class based on booked status
+                    if (slot.booked === 1) {
+                        slotDiv.classList.add('booked');
+                        slotDiv.innerText = `Booked (Start: ${formattedStartTime}, End: ${formattedEndTime})`;
+                    } else {
+                        slotDiv.classList.add('available');
+                        slotDiv.innerHTML = `
+                            <label>
+                                <input type="radio" name="timeSlot" value="${slot.startTime}_${slot.endTime}" required>
+                                ${formattedStartTime} - ${formattedEndTime}
+                            </label>
+                        `;  
+                        // slotDiv.innerText = `Available (Start: ${formattedStartTime}, End: ${formattedEndTime})`;
+                    }
+
+                    container.appendChild(slotDiv);                    
+                });           
             })          
         })  
     </script>

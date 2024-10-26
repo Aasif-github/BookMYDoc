@@ -4,10 +4,31 @@ import users from "../models/users.model.js";
 
 const postBooking  = async(req, res) => {
     try {        
-        const { name, phoneNo, reason, note, date, slot } = req.body;
+        const { name, phoneNo, reason, note, date, slot } = req.body;                
+        // console.log(name, phoneNo, reason, note, date, slot);        
+        let selectedSlot = slot.split('_');
+        let startTime = new Date(selectedSlot[0]);
+        let endTime = new Date(selectedSlot[1]);
+                
+        const pipeline = [
+            {
+                $match: {                    
+                    startTime: { $gte: startTime },
+                    endTime: { $lte: endTime }
+                }
+            },
+            {
+                $project: { _id: 1 } // Only project the _id field if you only need the ID
+            }
+        ];
+
+        const slotDetails = await slots.aggregate(pipeline); 
         
-        // slot  2024-10-26T14:00:00.000Z_2024-10-26T15:00:00.000Z 
-        console.log(name, phoneNo, reason, note, date, slot);
+        console.log('slotDetails', slotDetails)
+        
+        if (slotDetails.length === 0) { 
+            return res.send({ message: "No slot found in db" });
+        }
 
         const userDate = { name, phoneNo, reason, note }
         // const slotDetails = { startTime, endTime }    
@@ -16,7 +37,9 @@ const postBooking  = async(req, res) => {
         // let _slots = new slots(slotDetails);         
 
         let userId = _users._id
-        // let slotId = _slots._id
+        let slotId = slotDetails[0]._id;
+        
+        console.log(slotId);
         
         const bookingDetails = { userId, slotId, bookingDate:date, status:"confirm" }
         
@@ -27,16 +50,12 @@ const postBooking  = async(req, res) => {
                 console.log(response);      
             }).catch((error)=>{
                 console.log(`error:${error}`);
-            });                
-        
-            console.log(`here`);
-
+            });                                
         return res.status(201).send({
             status:"success",
             message:"Booking has made",
             data: {}
-        });                          
-       
+        });                                 
     } catch (error) {
         console.log(error);
     }
