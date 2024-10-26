@@ -57,6 +57,20 @@
     </form>
 
     <script>        
+        // Get today's date
+        const today = new Date();
+        const formattedToday = today.toISOString().split('T')[0];
+
+        // Calculate the date 10 days from today
+        const tenDaysLater = new Date(today);
+        tenDaysLater.setDate(today.getDate() + 10);
+        const formattedTenDaysLater = tenDaysLater.toISOString().split('T')[0];
+
+        // Set the min and max attributes on the date input
+        const dateInput = document.getElementById('date');
+        dateInput.setAttribute('min', formattedToday);
+        dateInput.setAttribute('max', formattedTenDaysLater);
+
         const form = document.getElementById('bookByDoc');
 
         form.addEventListener('submit', (e)=>{
