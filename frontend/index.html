@@ -46,20 +46,17 @@
     <br>
     <br>
         <!-- show all slots -->
-        <div id="slotsContainer"> 
-            <div class="slot">
-         
-            </div>
+        <div id="slotsContainer">             
         </div>
         <!-- show available slots -->
-        <div id="slots-container"></div>
+        <div id="slots-container">            
+        </div>
 
     <br>
     <button type="submit" >Submit</button>
     </form>
 
-    <script>
-        
+    <script>        
         const form = document.getElementById('bookByDoc');
 
         form.addEventListener('submit', (e)=>{
@@ -127,7 +124,6 @@
                             ${formattedStartTime} - ${formattedEndTime}
                         </label>
                     `;
-
                             slotsContainer.appendChild(slotDiv);
                         });
             })
@@ -145,13 +141,13 @@
             fetch(`http://localhost:3000/api/v1/slots/${date}`)
             .then(response => response.json())
             .then(data => {
-                const container = document.getElementById('slots-container');
-
-                console.log('Success:', data);
-                console.log('display',data.data);                
-                
+                const container = document.getElementById('slots-container');                
+                console.log('display',data.data);                                
                 let slots = data.data.results;              
                 
+                // Clear the container to remove old slots
+                container.innerHTML = '';
+
                 slots.forEach(slot => {
                     const slotDiv = document.createElement('div');
                     slotDiv.className = 'slot'; // Base class for all slots
@@ -175,10 +171,12 @@
                         `;  
                         // slotDiv.innerText = `Available (Start: ${formattedStartTime}, End: ${formattedEndTime})`;
                     }
-
                     container.appendChild(slotDiv);                    
-                });           
-            })          
+                });                 
+            })    
+            .catch((error) => {
+                console.error('Error:', error);
+            })      
         })  
     </script>
 </body>
