@@ -109,6 +109,10 @@
         socket.on('message', (data) => {
             console.log('Message from server:', data);
         });
+
+        socket.on('update', (data)=>{
+            console.log(`This is from Post Controller: ${JSON.stringify(data)}`);
+        })
         // Emit a message to the server
         socket.emit('message', 'Hello from client!');
 // #  --------------------------------------------------------------------------------------

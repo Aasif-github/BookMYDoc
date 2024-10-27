@@ -1,12 +1,12 @@
 import express from 'express';
-import http from 'http';
-import { Server } from 'socket.io';
+import http, { Server } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { initializeSocket } from './service/socket.io.js';
+
 import dbConnection from './database/dbConnection.js';
 import bookingRouter  from './routes/bookings.route.js';
 import slotsRouter from './routes/slot.route.js';
-
 
 const app = express();
 app.use(express.json());
@@ -17,14 +17,9 @@ app.use('/api/v1', bookingRouter);
 app.use('/api/v1', slotsRouter);
 
 // Create HTTP server and attach Socket.IO
-const server = http.createServer(app);
-
-const io = new Server(server, {
-    cors: {
-        origin: "http://localhost:3000", // Your frontend's URL
-        methods: ["GET", "POST"],
-    },
-});
+const server = http.createServer(app);  
+// Initialize Socket.IO
+const io = initializeSocket(server);
 
 // Get __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -37,34 +32,13 @@ app.get('/test', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'test.html'));
 });
 
-
-
-
-// app.post('/api/v1/book', async (req, res) => {
-    
-//     try{
-//         const { email, phone, reason, summary, date, slot } = req.body;
-//         console.log(email, phone, reason, summary, date, slot);
-
-//         // add model name here
-//         const saveData = new Booking({email, phone, reason, summary, date, slot});
-
-//         await saveData.save();
-
-//     }catch(err){
-//         console.log(err);
-//     }
-    
-// })
-
-
-
-
-
-
-
-
-
+/*
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:3000", // Your frontend's URL
+        methods: ["GET", "POST"],
+    },
+});
 
 // Set up Socket.IO connection
 io.on('connection', (socket) => {
@@ -83,12 +57,12 @@ io.on('connection', (socket) => {
         console.log('User disconnected:', socket.id);
     });
 });
-// Start the server with Socket.IO
+*/
 
 dbConnection().then(()=>{
     server.listen(3000, () => {
         console.log(`Server is running on port 3000`);
-    });
+    })
 }).catch((err)=>{
     console.log(err)
 });
