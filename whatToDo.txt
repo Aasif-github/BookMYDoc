@@ -7,7 +7,7 @@
 
 # Slots-Schema
 - slotsId
-- date (deleted - not required)
+- date
 - startTime
 - endTime
 
@@ -16,14 +16,6 @@
 - userId
 - slotsId
 - status [confirm | cancelled | completed]
-
-Task 1:
-fetch slots from db and show on front page - index.html [Done]
-
-
-Task 2:
-On date select - show availability of Slots
-- On date select, fetch all data which belongs to selected date.
 
 
 # does i need socket.io to update and display avilable slots to end user??
@@ -58,3 +50,8 @@ Using Socket.IO for updating and displaying available slots to end users can be 
 
 Ultimately, your choice depends on your application's requirements and the user experience you wish to provide. If you're aiming for a dynamic, interactive platform, Socket.IO can be a great addition!
 
+
+how to fetch branch after clone
+
+// below cmd will create branch aasif and fetch all data from remote branch slot-Feature
+git checkout -b aasif origin/slot-Feature
