@@ -48,6 +48,7 @@
         <!-- show all slots -->
         <div id="slotsContainer">             
         </div>
+        <div id="slotsContainer_socket"></div>
         <!-- show available slots -->
         <div id="slots-container">            
         </div>
@@ -109,10 +110,53 @@
         socket.on('message', (data) => {
             console.log('Message from server:', data);
         });
+        // update current booking slots
+        // Update current booking slots
+socket.on('update', (data) => {
+    const slotsContainer_socket = document.getElementById('slotsContainer_socket');
+    const container = document.getElementById('slots-container');
 
-        socket.on('update', (data)=>{
-            console.log(`This is from Post Controller: ${JSON.stringify(data)}`);
-        })
+    // Check if the container exists
+    if (!slotsContainer_socket) {
+        console.error('Element with ID "slotsContainer_socket" not found.');
+        return;
+    }
+    
+    console.log('display>>>', data);
+    slotsContainer_socket.innerHTML = data;
+    // container.hidden = true;
+    /*
+    
+    // Optionally clear previous content
+    slotsContainer_socket.innerHTML = '';
+
+    data.forEach(slot => {
+        const slotDiv = document.createElement('div');
+        slotDiv.classList.add('slot');
+
+        const options = {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true,
+            timeZone: 'Asia/Kolkata'
+        };
+
+        const formattedStartTime = new Date(slot.startTime).toLocaleTimeString('en-IN', options);
+        const formattedEndTime = new Date(slot.endTime).toLocaleTimeString('en-IN', options);
+
+        slotDiv.innerHTML = `
+            <label>
+                <input type="radio" name="timeSlot" value="${slot.startTime}_${slot.endTime}" required>
+                ${formattedStartTime} - ${formattedEndTime}
+            </label>
+        `;
+        
+        slotsContainer_socket.appendChild(slotDiv);
+    });
+*/
+    console.log(`This is from Post Controller: ${JSON.stringify(data)}`);
+});
+
         // Emit a message to the server
         socket.emit('message', 'Hello from client!');
 // #  --------------------------------------------------------------------------------------
@@ -130,10 +174,16 @@
                     const slotDiv = document.createElement('div');
                     slotDiv.classList.add('slot');
                     // Define the radio button with formatted start and end time
-     
+                    const options = {
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        hour12: true,
+                        timeZone: 'Asia/Kolkata'
+                    }
+
                     // Format the start and end times with AM/PM
-                    const formattedStartTime = new Date(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-                    const formattedEndTime = new Date(slot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const formattedStartTime = new Date(slot.startTime).toLocaleTimeString('en-IN', options);
+                    const formattedEndTime = new Date(slot.endTime).toLocaleTimeString('en-IN', options);
 
                     // Define the radio button with formatted start and end time including AM/PM
                     slotDiv.innerHTML = `
@@ -160,7 +210,7 @@
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('slots-container');                
-                console.log('display',data.data);                                
+                console.log('display', data.data);                                
                 let slots = data.data.results;              
                 
                 // Clear the container to remove old slots
@@ -170,10 +220,17 @@
                     const slotDiv = document.createElement('div');
                     slotDiv.className = 'slot'; // Base class for all slots
                     
-                     // Format the start and end times with AM/PM
-                    const formattedStartTime = new Date(slot.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-                    
-                    const formattedEndTime = new Date(slot.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                    const options = { 
+                        hour: 'numeric',  // Removes leading zero
+                        minute: 'numeric',                          
+                        hour12: true, 
+                        timeZone: 'Asia/Kolkata' 
+                    };
+
+                    // Format the start and end times with AM/PM
+                    const formattedStartTime = new Date(slot.startTime).toLocaleTimeString('en-IN', options);
+                    const formattedEndTime = new Date(slot.endTime).toLocaleTimeString('en-IN', options);
+                     
 
                     // Set class based on booked status
                     if (slot.booked === 1) {

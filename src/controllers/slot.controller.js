@@ -31,7 +31,7 @@ const getAvailableSlots = async(req, res) => {
             { $sort: { count: -1 } }, 
         ]);
         // match that slotId with available slots        
-        console.log('avilableSlots', avilableSlots);   
+        console.log('return booked slots', avilableSlots);   
         
         // Convert _id strings to ObjectIds
         const available_slot_id = avilableSlots.map((item)=> new ObjectId(item._id));
