@@ -59,7 +59,8 @@ const postBooking = async (req, res) => {
                 }
 
                 const bookingDate = currentBooking[0].bookingDate;
-                console.log(bookingDate);
+                
+                console.log('bookingDate', bookingDate);
 
                 const availableSlots = await bookings
                     .aggregate([
@@ -91,18 +92,22 @@ const postBooking = async (req, res) => {
 
                 const results = await slots.aggregate(slotPipeline);
 
-                io.emit('update', results);
+                io.emit('update', {results, bookingDate, slotId});
+
                 console.log("result-->", results);
+
+                return res.status(201).send({
+                    status: "success",
+                    message: "Booking has been made",
+                    data: { createBooking }
+                });
             })
             .catch((error) => {
                 console.log(`error: ${error}`);
             });
 
-        return res.status(201).send({
-            status: "success",
-            message: "Booking has been made",
-            data: { createBooking }
-        });
+       
+
     } catch (error) {
         console.log(error);
         res.status(500).send({ status: "error", message: error.message });
