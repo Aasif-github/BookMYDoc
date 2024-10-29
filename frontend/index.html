@@ -52,7 +52,7 @@
         <!-- show all slots -->
         <div id="slotsContainer">
         </div>
-        <div id="slotsContainer_socket"></div>
+        
         <!-- show available slots -->
         <div id="slots-container">
         </div>
@@ -122,16 +122,8 @@
         // Update current booking slots
         socket.on('update', (data) => {
 
-            const { results, bookingDate, slotId } = data;
-            const slotsContainer_socket = document.getElementById('slotsContainer_socket');
+            const { results, bookingDate, slotId } = data;            
             const container = document.getElementById('slots-container');
-
-            // Check if the container exists
-            if (!slotsContainer_socket) {
-                console.error('Element with ID "slotsContainer_socket" not found.');
-                return;
-            }
-
             const bookingDateObj = new Date(bookingDate);
             const formattedDate = bookingDateObj.toISOString().slice(0, 10);
 
@@ -256,9 +248,4 @@
 </body>
 
 </html>
-
-<!-- todo
- on dom load fetch form and slots
-1. submit this form with ajax or fetch 
-2. onSubmit update frontend with avilable slot 
--->
+ 
